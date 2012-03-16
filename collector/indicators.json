@@ -1,0 +1,22 @@
+{
+  "gdp": "NY.GDP.MKTP.CD",
+  "gdp_per_capita": "NY.GDP.PCAP.CD",
+  "gdp_growth_perc": "NY.GDP.MKTP.KD.ZG",
+  
+  "energy_production": "EG.EGY.PROD.KT.OE",
+  "energy_use": "EG.USE.COMM.KT.OE",
+  "gdp_per_energy_use": "EG.GDP.PUSE.KO.PP.KD",
+  "alternative_energy_perc": "EG.USE.COMM.CL.ZS",
+  "energy_imports_perc": "EG.IMP.CONS.ZS",
+  "diesel_fuel_price": "EP.PMP.DESL.CD",
+  "road_sector_energy_use_perc": "IS.ROD.ENGY.ZS",
+  "electric_power_consumption_per_capita": "EG.USE.ELEC.KH.PC",
+
+  "co2_emisssions": "EN.ATM.CO2E.KT",
+  "co2_emissions_per_capita": "EN.ATM.CO2E.PC",
+
+  "motor_vehicles_per_1000_people": "IS.VEH.NVEH.P3",
+  "passenger_cars_per_1000_people": "IS.VEH.PCAR.P3",
+  "urban_population": "SP.URB.TOTL",
+  "urban_population_perc": "SP.URB.TOTL.IN.ZS"
+}
