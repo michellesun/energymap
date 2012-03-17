@@ -24,11 +24,43 @@ def get_indicators
   JSON.parse(File.read('indicators.json'), :symbolize_names => true)
 end
 
+class Hash
+  def export_to_json(file)
+    File.open(file, 'w') do |file|
+      file.write to_json
+    end
+  end
+
+  def set_if_greater(name, value)
+    return if value.nil?
+    if has_key?(name)
+      self[name] = value if value > self[name]
+    else
+      self[name] = value
+    end
+  end
+
+  def set_if_smaller(name, value)
+    return if value.nil?
+    if has_key?(name)
+      self[name] = value if value < self[name]
+    else
+      self[name] = value
+    end
+  end
+end 
+
 class CountryList
   include Enumerable
+  attr_reader :attributes
+
   @@indicators = get_indicators
   def initialize
     @countries = {}
+    @attributes = {}
+    @@indicators.each do |name, code|
+      @attributes[name] = {:code => code} 
+    end
   end
 
   def each
@@ -45,11 +77,12 @@ class CountryList
   end
 
   def get_country_data(country)
-    @@indicators.each do |indicator_name, indicator_code|
+    @@attributes.each do |indicator_name, indicator|
+      indicator_code = indicator[:code]
       debug = false
       begin
         response = db_request("countries/#{country[:id]}/indicators/#{indicator_code}", {:date => "2000:2012", :MRV => 1}, debug)
-        country[indicator_name] = response[0]["value"] unless response.nil? or response[0].nil?
+        country[indicator_name] = response[0]["value"].to_f unless response.nil? or response[0].nil?
       rescue Exception => msg
         unless debug
           puts "[ERROR] #{msg}\nRetrying with debug flag on..." 
@@ -62,31 +95,84 @@ class CountryList
     end
   end
 
+  def get_attributes_info
+    @countries.each do |code, country|
+      @attributes.each do |attr, indicator|
+        value = country[attr]
+        indicator.set_if_greater(:max, value)
+        indicator.set_if_smaller(:min, value)
+      end
+    end
+
+    @attributes.each do |indicator_name, indicator|
+      indicator_code = indicator[:code]
+      response = db_request("/indicators/#{indicator_code}")
+      next if response.nil? or response[0].nil?
+      indicator[:name] = response[0]["name"]
+      indicator[:description] = response[0]["sourceNote"]
+      indicator[:source] = response[0]["source"]["value"] unless response[0]["source"].nil?
+    end
+  end
+
   def load_from_data_bank!
-    @@indicators.each do |indicator_name, indicator_code|
+    @attributes.each do |indicator_name, indicator|
+      indicator_code = indicator[:code]
       response = db_request("/countries/all/indicators/#{indicator_code}", {:date => "2000:2012", :MRV => 1})
       next if response.nil?
       response.each do |c|
         next unless @countries.has_key? c["country"]["id"]
-        @countries[c["country"]["id"]][indicator_name] = c["value"]
+        @countries[c["country"]["id"]][indicator_name] = c["value"].to_f unless c["value"].nil?
       end
     end
+  end
+
+  def export_to_csv(file, nil_replacement = "ND")
+    CSV.open(file, "wb") do |csv|
+      csv << first.keys
+      each do |i|
+        csv << i.values.map { |x| (x.nil?)?nil_replacement:x}
+      end
+    end
+  end
+
+  def export_to_json(file)
+    @countries.export_to_json(file)
+  end
+
+  def scale_hash
+    scale = @countries.clone
+    
+    scale.each do |code, country|
+      @attributes.each do |attr, indicator|
+        max = indicator[:max]
+        min = indicator[:min]
+        value = country[attr]
+        next if value.nil? or max.nil? or min.nil?
+        country[attr] = ((value-min)/(max-min))*100
+      end
+    end
+
+    scale
   end
 end
 
 countries = CountryList.new
-puts "Getting country info..."
+puts "Getting country list..."
 countries.populate_from_data_bank!
-puts "Done, #{countries.count} countries found."
+puts "#{countries.count} countries found."
 puts "Getting data for each country..."
 countries.load_from_data_bank!
-puts "Done."
-puts "Writing to countries.csv..."
-CSV.open("countries.csv", "wb") do |csv|
-  csv << countries.first.keys
-  countries.each do |country|
-    csv << country.values.map { |x| (x.nil?)?"ND":x}
-  end
-end
+puts "Getting indicator info..."
+countries.get_attributes_info
+puts "Exporting to countries.csv..."
+countries.export_to_csv("data/countries.csv")
+puts "Exporting to countries.json..."
+countries.export_to_json("data/countries.json")
+puts "Exporting attributes to attributes.json..."
+countries.attributes.export_to_json("data/attributes.json")
+puts "Calculating scale hash..."
+scale = countries.scale_hash
+puts "Exporting scale hash to scale.json..."
+scale.export_to_json("data/scale.json")
 puts "All done."
 
