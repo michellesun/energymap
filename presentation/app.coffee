@@ -1,54 +1,69 @@
-cancelEvent = (e) ->
-  e = (if e then e else window.event)
-  e.stopPropagation()  if e.stopPropagation
-  e.preventDefault()  if e.preventDefault
-  e.cancelBubble = true
-  e.cancel = true
-  e.returnValue = false
-  false
+window.colors = {
+  "unselected_country": "#A1A1A1",
+  "selected_country": "#999",
+  "border": "#999"
+}
 
-start = ->
-  r = this
-  r.rect(0, 0, 1000, 400, 10).attr
-    stroke: "none"
-    fill: "#333333"
+class App
+  constructor: (paper, width, height) ->
+    @paper = paper
+    @width = width
+    @height = height
+    @borders = {}
+    @iso2code = {}
+    @attributes = null
+    @data = null
+    @scaled_data = null
+    @getData()
 
-  over = ->
-    @c = @c or @attr("fill")
-    @stop().animate
-      fill: "#bacabd"
-    , 500
+  start: ->
+    console.log @attributes
+    $.getJSON "data/world_svg_paths_by_code.json", @drawMap
 
-  out = ->
-    @stop().animate
-      fill: @c
-    , 500
+  getData: ->
+    app = this
+    $.getJSON "data/attributes.json", (data) ->
+      app.attributes = data
+      $.getJSON "data/countries.json", (data) ->
+        app.data = data
+        for iso2code, country of data
+          console.log iso2code
+          app.iso2code[country["id"]] = iso2code
+        $.getJSON "data/scale.json", (data) ->
+          app.scaled_data = data
+          app.start()
 
-  r.setStart()
-  hue = Math.random()
-  world = window.world
-  for country of world.shapes
-    r.path(world.shapes[country]).attr
-      stroke: "#ccc6ae"
-      fill: "#f0efeb"
-      "stroke-opacity": 0.25
-  world = r.setFinish()
-  world.hover over, out
-  world.getXY = (lat, lon) ->
-    cx: lon * 2.6938 + 465.4
-    cy: lat * -2.6938 + 227.066
+  countryColor: (country) ->
+    if !@iso2code[country]
+      return window.colors["unselected_country"]
+    value = @scaled_data[@iso2code[country]].co2_emissions_per_capita
+    if !value 
+      return window.colors["unselected_country"]
+    if value < 20
+      return "#075E02"
+    else if value < 50
+      return "#8F7E00"
+    else if value < 80
+      return "#BA0707"
+    else
+      return "#750000"
 
-  world.getLatLon = (x, y) ->
-    lat: (y - 227.066) / -2.6938
-    lon: (x - 465.4) / 2.6938
-  
-  zoomlevel = 1
-  document.getElementById("map").addEventListener('mousewheel',  (event) ->
-    console.log(event.wheelDelta/120)
-    
-    r.setViewBox(500, 200, 500, 200, false)
+  drawMap: (data) =>
+      for country, val of data
+        @borders[country] = []
+        line = null
+        path = null
+        for i in [0..val.length]
+          line = @paper.path(val[i])
+          line.attr
+            stroke: window.colors["border"]
+            "stroke-width": 1
+            fill: @countryColor(country)
+          line.country = country
+          @borders[country].push line
 
-    return cancelEvent(event)
-  , false)
-
-Raphael("map", 1000, 400, start)
+window.onload = () ->
+  Raphael("map", 1200, 600, ->
+    paper = this
+    app = new App(paper, 1200, 600)
+  )
