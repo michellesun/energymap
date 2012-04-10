@@ -98,6 +98,7 @@ class CountryList
   def get_attributes_info
     @countries.each do |code, country|
       @attributes.each do |attr, indicator|
+        next if @countries[code][:region_id] == "NA"
         value = country[attr]
         indicator.set_if_greater(:max, value)
         indicator.set_if_smaller(:min, value)
@@ -117,7 +118,14 @@ class CountryList
   def load_from_data_bank!
     @attributes.each do |indicator_name, indicator|
       indicator_code = indicator[:code]
-      response = db_request("/countries/all/indicators/#{indicator_code}", {:date => "2000:2012", :MRV => 1})
+      tries = 0
+      begin
+        response = db_request("/countries/all/indicators/#{indicator_code}", {:date => "2000:2012", :MRV => 1})
+      rescue
+        puts "Error, retrying..."
+        tries+=1
+        retry if tries<=3
+      end
       next if response.nil?
       response.each do |c|
         next unless @countries.has_key? c["country"]["id"]

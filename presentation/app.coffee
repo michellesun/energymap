@@ -1,7 +1,10 @@
-window.colors = {
-  "unselected_country": "#A1A1A1",
-  "selected_country": "#999",
-  "border": "#999"
+window.styles = {
+  "border_color": "#1C1C1C",
+  "selected_border_color": "#FCD31C",
+  "border_width": 1,
+  "selected_border_width": 2,
+  "default_fill": "#8A8A8A"
+  "fill_colors": ["#229E00" , "#1D5E0B","#B0B818", "#F0C348", "#DE8100","#F06537","#D3D02", "#A62C03", "#731E02","#631900", "#631900"]
 }
 
 class App
@@ -10,14 +13,16 @@ class App
     @width = width
     @height = height
     @borders = {}
+    @attr = {}
     @iso2code = {}
     @attributes = null
     @data = null
     @scaled_data = null
+    @selected_country = null
     @getData()
 
   start: ->
-    console.log @attributes
+    console.log @scaled_data
     $.getJSON "data/world_svg_paths_by_code.json", @drawMap
 
   getData: ->
@@ -35,32 +40,51 @@ class App
 
   countryColor: (country) ->
     if !@iso2code[country]
-      return window.colors["unselected_country"]
-    value = @scaled_data[@iso2code[country]].co2_emissions_per_capita
+      return window.styles["default_fill"]
+    value = @scaled_data[@iso2code[country]].co2_emisssions
     if !value 
-      return window.colors["unselected_country"]
-    if value < 20
-      return "#075E02"
-    else if value < 50
-      return "#8F7E00"
-    else if value < 80
-      return "#BA0707"
+      window.styles["default_fill"]
     else
-      return "#750000"
+      window.styles["fill_colors"][Math.floor(value/10)]
+  unselectCountry: () ->
+    return if @selected_country == null
+    @attr[@selected_country].stroke = window.styles["border_color"]
+    @attr[@selected_country].stroke_width = window.styles["border_width"]
+    @colorCountry(@selected_country, 500)
+    @selected_country = null
+
+
+  selectCountry: (country) ->
+    return unless @borders.hasOwnProperty(country) and @selected_country != country
+    @attr[country].stroke = window.styles["selected_border_color"]
+    @attr[country].stroke_width = window.styles["selected_border_width"]
+    @colorCountry(country, 500)
+    @selected_country = country
+
+  getClickHandler: (country) ->
+    app = this
+    return ->
+      app.unselectCountry()
+      app.selectCountry(country)
+
+  colorCountry: (country, time=1) ->
+    return unless @borders.hasOwnProperty(country)
+    for i in [0...@borders[country].length]
+      @borders[country][i].attr({"stroke": @attr[country].stroke, "fill": @attr[country].fill, "stroke-width": @attr[country].stroke_width})
+
 
   drawMap: (data) =>
       for country, val of data
         @borders[country] = []
         line = null
         path = null
-        for i in [0..val.length]
+        @attr[country] = {stroke: window.styles["border_color"], fill: @countryColor(country), stroke_width: window.styles["border_width"]}
+        for i in [0...val.length]
           line = @paper.path(val[i])
-          line.attr
-            stroke: window.colors["border"]
-            "stroke-width": 1
-            fill: @countryColor(country)
           line.country = country
+          $(line.node).click(@getClickHandler(country))
           @borders[country].push line
+        @colorCountry(country)
 
 window.onload = () ->
   Raphael("map", 1200, 600, ->
