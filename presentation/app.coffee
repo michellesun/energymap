@@ -7,6 +7,12 @@ window.styles = {
   "fill_colors": ["#229E00" , "#1D5E0B","#B0B818", "#F0C348", "#DE8100","#F06537","#D3D02", "#A62C03", "#731E02","#631900", "#631900"]
 }
 
+fnum = (n) ->
+  f = {12: "trillion", 9: "billion", 6: "million", 3: "thousand"}
+  for v in [12, 9, 6, 3]
+    if n>=Math.pow(10, v)
+      return "#{(n/Math.pow(10, v)).toFixed(2)} #{f[v]}"
+  return n
 class App
   constructor: (paper, width, height) ->
     @paper = paper
@@ -46,6 +52,11 @@ class App
       window.styles["default_fill"]
     else
       window.styles["fill_colors"][Math.floor(value/10)]
+  
+  getLegend: (country) ->
+    c = @data[@iso2code[country]]
+    "<h2>#{c.name}</h2><p id='general_info'>GDP: #{fnum(c.gdp)} USD"
+
   unselectCountry: () ->
     return if @selected_country == null
     @attr[@selected_country].stroke = window.styles["border_color"]
@@ -53,12 +64,12 @@ class App
     @colorCountry(@selected_country, 500)
     @selected_country = null
 
-
   selectCountry: (country) ->
     return unless @borders.hasOwnProperty(country) and @selected_country != country
     @attr[country].stroke = window.styles["selected_border_color"]
     @attr[country].stroke_width = window.styles["selected_border_width"]
     @colorCountry(country, 500)
+    $("#legend").html(@getLegend(country))
     @selected_country = country
 
   getClickHandler: (country) ->
@@ -91,3 +102,4 @@ window.onload = () ->
     paper = this
     app = new App(paper, 1200, 600)
   )
+  $("#legend").draggable()

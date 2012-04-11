@@ -1,5 +1,5 @@
 (function() {
-  var App,
+  var App, fnum,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   window.styles = {
@@ -9,6 +9,24 @@
     "selected_border_width": 2,
     "default_fill": "#8A8A8A",
     "fill_colors": ["#229E00", "#1D5E0B", "#B0B818", "#F0C348", "#DE8100", "#F06537", "#D3D02", "#A62C03", "#731E02", "#631900", "#631900"]
+  };
+
+  fnum = function(n) {
+    var f, v, _i, _len, _ref;
+    f = {
+      12: "trillion",
+      9: "billion",
+      6: "million",
+      3: "thousand"
+    };
+    _ref = [12, 9, 6, 3];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      v = _ref[_i];
+      if (n >= Math.pow(10, v)) {
+        return "" + ((n / Math.pow(10, v)).toFixed(2)) + " " + f[v];
+      }
+    }
+    return n;
   };
 
   App = (function() {
@@ -64,6 +82,12 @@
       }
     };
 
+    App.prototype.getLegend = function(country) {
+      var c;
+      c = this.data[this.iso2code[country]];
+      return "<h2>" + c.name + "</h2><p id='general_info'>GDP: " + (fnum(c.gdp)) + " USD";
+    };
+
     App.prototype.unselectCountry = function() {
       if (this.selected_country === null) return;
       this.attr[this.selected_country].stroke = window.styles["border_color"];
@@ -79,6 +103,7 @@
       this.attr[country].stroke = window.styles["selected_border_color"];
       this.attr[country].stroke_width = window.styles["selected_border_width"];
       this.colorCountry(country, 500);
+      $("#legend").html(this.getLegend(country));
       return this.selected_country = country;
     };
 
@@ -135,11 +160,12 @@
   })();
 
   window.onload = function() {
-    return Raphael("map", 1200, 600, function() {
+    Raphael("map", 1200, 600, function() {
       var app, paper;
       paper = this;
       return app = new App(paper, 1200, 600);
     });
+    return $("#legend").draggable();
   };
 
 }).call(this);
