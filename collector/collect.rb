@@ -11,9 +11,9 @@ require 'csv'
 def db_request(req, options = {}, debug = false)
   options_str = ""
   options.each do |key, val|
-    options_str << "&#{key}=#{val}"
+    options_str << "&#{key.to_s}=#{val.to_s}"
   end
-  request = "http://api.worldbank.org/#{req}?format=json&per_page=500#{options_str}"
+  request = "http://api.worldbank.org/#{req}?format=json&per_page=10000#{options_str}"
   puts ">>>" + request if debug
   reply = URI.parse(request).read
   puts "<<<" + reply + "\n\n" if debug 
@@ -119,17 +119,22 @@ class CountryList
     @attributes.each do |indicator_name, indicator|
       indicator_code = indicator[:code]
       tries = 0
-      begin
-        response = db_request("/countries/all/indicators/#{indicator_code}", {:date => "2000:2012", :MRV => 1})
-      rescue
-        puts "Error, retrying..."
-        tries+=1
-        retry if tries<=3
-      end
+      #begin
+        response = db_request("/countries/all/indicators/#{indicator_code}", {:date => "2002:2012"})
+      #rescue 
+      #  puts "Error, retrying..."
+      #  tries+=1
+      #  retry if tries<=3
+      #end
       next if response.nil?
+      date = Hash.new
       response.each do |c|
         next unless @countries.has_key? c["country"]["id"]
-        @countries[c["country"]["id"]][indicator_name] = c["value"].to_f unless c["value"].nil?
+        date[c["country"]["id"]] = Hash.new if date[c["country"]["id"]].nil?
+        if (!c["value"].nil?) and date[c["country"]["id"]][indicator_name].to_i < c["date"].to_i
+          @countries[c["country"]["id"]][indicator_name] = c["value"].to_f unless c["value"].nil?
+          date[c["country"]["id"]][indicator_name] = c["date"].to_i
+        end
       end
     end
   end

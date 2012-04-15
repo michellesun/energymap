@@ -11,8 +11,10 @@
     "fill_colors": ["#229E00", "#1D5E0B", "#B0B818", "#F0C348", "#DE8100", "#F06537", "#D3D02", "#A62C03", "#731E02", "#631900", "#631900"]
   };
 
-  fnum = function(n) {
+  fnum = function(n, cur) {
     var f, v, _i, _len, _ref;
+    if (cur == null) cur = "";
+    if (isNaN(n)) return "No data";
     f = {
       12: "trillion",
       9: "billion",
@@ -23,10 +25,10 @@
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       v = _ref[_i];
       if (n >= Math.pow(10, v)) {
-        return "" + ((n / Math.pow(10, v)).toFixed(2)) + " " + f[v];
+        return ("" + ((n / Math.pow(10, v)).toFixed(2)) + " " + f[v]) + " " + cur;
       }
     }
-    return n.toFixed(2);
+    return n.toFixed(2) + " " + cur;
   };
 
   App = (function() {
@@ -86,7 +88,7 @@
       var c, html, i, ind, _i, _len;
       c = this.data[this.iso2code[country]];
       ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc'];
-      html = "<h2>" + c.name + "</h2><span id='general_info'>GDP: " + (fnum(c.gdp)) + " USD</span><table id='data'><tbody>";
+      html = "<h2>" + c.name + "</h2><span id='general_info'>GDP: " + (fnum(c.gdp, "USD")) + "</span><table id='data'><tbody>";
       for (_i = 0, _len = ind.length; _i < _len; _i++) {
         i = ind[_i];
         console.log(i);
