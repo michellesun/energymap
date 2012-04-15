@@ -12,7 +12,8 @@ fnum = (n) ->
   for v in [12, 9, 6, 3]
     if n>=Math.pow(10, v)
       return "#{(n/Math.pow(10, v)).toFixed(2)} #{f[v]}"
-  return n
+  n.toFixed(2)
+
 class App
   constructor: (paper, width, height) ->
     @paper = paper
@@ -55,7 +56,13 @@ class App
   
   getLegend: (country) ->
     c = @data[@iso2code[country]]
-    "<h2>#{c.name}</h2><p id='general_info'>GDP: #{fnum(c.gdp)} USD"
+    ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc']
+    html = "<h2>#{c.name}</h2><span id='general_info'>GDP: #{fnum(c.gdp)} USD</span><table id='data'><tbody>"
+    for i in ind
+        console.log i
+        html += "<tr><td>#{@attributes[i].name}</td><td>#{fnum(@data[@iso2code[country]][i])}</td></tr>"
+    html += "</tbody></table>"
+    html
 
   unselectCountry: () ->
     return if @selected_country == null

@@ -26,7 +26,7 @@
         return "" + ((n / Math.pow(10, v)).toFixed(2)) + " " + f[v];
       }
     }
-    return n;
+    return n.toFixed(2);
   };
 
   App = (function() {
@@ -83,9 +83,17 @@
     };
 
     App.prototype.getLegend = function(country) {
-      var c;
+      var c, html, i, ind, _i, _len;
       c = this.data[this.iso2code[country]];
-      return "<h2>" + c.name + "</h2><p id='general_info'>GDP: " + (fnum(c.gdp)) + " USD";
+      ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc'];
+      html = "<h2>" + c.name + "</h2><span id='general_info'>GDP: " + (fnum(c.gdp)) + " USD</span><table id='data'><tbody>";
+      for (_i = 0, _len = ind.length; _i < _len; _i++) {
+        i = ind[_i];
+        console.log(i);
+        html += "<tr><td>" + this.attributes[i].name + "</td><td>" + (fnum(this.data[this.iso2code[country]][i])) + "</td></tr>";
+      }
+      html += "</tbody></table>";
+      return html;
     };
 
     App.prototype.unselectCountry = function() {
