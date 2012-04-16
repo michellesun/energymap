@@ -3,6 +3,8 @@
 
 An interactive world map visualizing energy related data.  Data collector code in Ruby. Coffeescript, HAML, SASS for the presentation. Animations by Raphael.js. Also using jquery and jquery-ui (I plan on removing the jquery dependencies soon). All data from the [World Data Bank](http://data.worldbank.org/).
 
+[Live Demo](http://chrisp.gr/projects/energymap/)
+
 Inspired by [MigrationsMap.net](https://github.com/madewulf/MigrationsMap.net).
 
 ## Technical Information
