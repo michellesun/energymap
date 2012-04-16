@@ -45,11 +45,31 @@
       this.scaled_data = null;
       this.selected_country = null;
       this.getData();
+      this.view = "co2_emisssions";
     }
 
     App.prototype.start = function() {
-      console.log(this.scaled_data);
-      return $.getJSON("data/world_svg_paths_by_code.json", this.drawMap);
+      var app;
+      $.getJSON("data/world_svg_paths_by_code.json", this.drawMap);
+      app = this;
+      return $("#select-view").click(function(e) {
+        return app.changeView(e.target.id);
+      });
+    };
+
+    App.prototype.changeView = function(view) {
+      var country, val, _ref, _results;
+      $("#select-view").children().removeClass("active");
+      $("#select-view > #" + view).addClass("active");
+      this.view = view;
+      _ref = this.borders;
+      _results = [];
+      for (country in _ref) {
+        val = _ref[country];
+        this.attr[country]["fill"] = this.countryColor(country);
+        _results.push(this.colorCountry(country, 500));
+      }
+      return _results;
     };
 
     App.prototype.getData = function() {
@@ -62,7 +82,6 @@
           app.data = data;
           for (iso2code in data) {
             country = data[iso2code];
-            console.log(iso2code);
             app.iso2code[country["id"]] = iso2code;
           }
           return $.getJSON("data/scale.json", function(data) {
@@ -76,7 +95,7 @@
     App.prototype.countryColor = function(country) {
       var value;
       if (!this.iso2code[country]) return window.styles["default_fill"];
-      value = this.scaled_data[this.iso2code[country]].co2_emisssions;
+      value = this.scaled_data[this.iso2code[country]][this.view];
       if (!value) {
         return window.styles["default_fill"];
       } else {
@@ -91,7 +110,6 @@
       html = "<h2>" + c.name + "</h2><span id='general_info'>GDP: " + (fnum(c.gdp, "USD")) + "</span><table id='data'><tbody>";
       for (_i = 0, _len = ind.length; _i < _len; _i++) {
         i = ind[_i];
-        console.log(i);
         html += "<tr><td>" + this.attributes[i].name + "</td><td>" + (fnum(this.data[this.iso2code[country]][i])) + "</td></tr>";
       }
       html += "</tbody></table>";
@@ -132,11 +150,11 @@
       if (!this.borders.hasOwnProperty(country)) return;
       _results = [];
       for (i = 0, _ref = this.borders[country].length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
-        _results.push(this.borders[country][i].attr({
+        _results.push(this.borders[country][i].animate({
           "stroke": this.attr[country].stroke,
           "fill": this.attr[country].fill,
           "stroke-width": this.attr[country].stroke_width
-        }));
+        }, time));
       }
       return _results;
     };

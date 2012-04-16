@@ -28,10 +28,22 @@ class App
     @scaled_data = null
     @selected_country = null
     @getData()
+    @view = "co2_emisssions"
 
   start: ->
-    console.log @scaled_data
     $.getJSON "data/world_svg_paths_by_code.json", @drawMap
+    app = this
+    $("#select-view").click (e) ->
+      app.changeView(e.target.id)
+
+  changeView: (view)->
+    $("#select-view").children().removeClass("active")
+    $("#select-view > ##{view}").addClass("active")
+    @view = view
+    for country, val of @borders
+      @attr[country]["fill"] = @countryColor(country)
+      @colorCountry(country, 500)
+
 
   getData: ->
     app = this
@@ -40,7 +52,6 @@ class App
       $.getJSON "data/countries.json", (data) ->
         app.data = data
         for iso2code, country of data
-          console.log iso2code
           app.iso2code[country["id"]] = iso2code
         $.getJSON "data/scale.json", (data) ->
           app.scaled_data = data
@@ -49,7 +60,7 @@ class App
   countryColor: (country) ->
     if !@iso2code[country]
       return window.styles["default_fill"]
-    value = @scaled_data[@iso2code[country]].co2_emisssions
+    value = @scaled_data[@iso2code[country]][@view]
     if !value 
       window.styles["default_fill"]
     else
@@ -60,7 +71,6 @@ class App
     ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc']
     html = "<h2>#{c.name}</h2><span id='general_info'>GDP: #{fnum(c.gdp, "USD")}</span><table id='data'><tbody>"
     for i in ind
-        console.log i
         html += "<tr><td>#{@attributes[i].name}</td><td>#{fnum(@data[@iso2code[country]][i])}</td></tr>"
     html += "</tbody></table>"
     html
@@ -89,7 +99,7 @@ class App
   colorCountry: (country, time=1) ->
     return unless @borders.hasOwnProperty(country)
     for i in [0...@borders[country].length]
-      @borders[country][i].attr({"stroke": @attr[country].stroke, "fill": @attr[country].fill, "stroke-width": @attr[country].stroke_width})
+      @borders[country][i].animate({"stroke": @attr[country].stroke, "fill": @attr[country].fill, "stroke-width": @attr[country].stroke_width}, time)
 
 
   drawMap: (data) =>
