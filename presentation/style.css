@@ -50,3 +50,18 @@ footer {
     font-size: 12px; }
   #legend #data {
     font-size: 10px; }
+
+.button-group {
+  width: 600px;
+  margin: 0 auto; }
+  .button-group button {
+    margin: 0;
+    height: 30px;
+    width: 150px;
+    float: left; }
+    .button-group button:first-child {
+      display: inline-block;
+      border-radius: 15px 0 0 15px; }
+    .button-group button:last-child {
+      display: inline-block;
+      border-radius: 0 15px 15px 0; }

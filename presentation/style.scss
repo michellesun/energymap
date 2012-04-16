@@ -66,3 +66,25 @@ footer {
     font-size: 10px;
   }
 }
+
+.button-group {
+  width: 600px;
+  margin: 0 auto;
+  button {
+    margin: 0;
+    height: 30px;
+    width: 150px;
+    float: left;
+
+    &:first-child {
+      display: inline-block;
+      border-radius: 15px 0 0 15px;
+    }
+
+    &:last-child {
+      display: inline-block;
+      border-radius: 0 15px 15px 0;
+
+    }
+  }
+}
