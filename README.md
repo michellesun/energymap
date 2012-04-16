@@ -1,5 +1,6 @@
 # The Energy Map 
 **Under active development. This project is functional, but not yet complete.**
+
 An interactive world map visualizing energy related data.  Data collector code in Ruby. Coffeescript, HAML, SASS for the presentation. Animations by Raphael.js. Also using jquery and jquery-ui (I plan on removing the jquery dependencies soon). All data from the [World Data Bank](http://data.worldbank.org/).
 
 Inspired by [MigrationsMap.net](https://github.com/madewulf/MigrationsMap.net).
@@ -18,6 +19,7 @@ The website doesn't make any direct calls to the API; instead, it loads the .jso
 For each indicator and country, the most recent available value is being used (excluding values older than 10 years). Be aware, that means that two indicator values for two different countries might not be of the same date. All data from the [World Data Bank](http://data.worldbank.org/). You are free to use any of the produced data files (described below) for your own project.
 ### Files
 All data files are locaed in presentation/data.
+
 * attributes.json - Information about each indicator used by the app.
 * countries.json - The actual data, per country. Keys are ISO2 country codes.
 * countries.csv - The exact same data as above, in csv format. Not used in the actual app.
