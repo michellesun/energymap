@@ -1,3 +1,4 @@
+# Some configuration options
 window.styles = {
   "border_color": "#1C1C1C",
   "selected_border_color": "#FCD31C",
@@ -6,6 +7,7 @@ window.styles = {
   "default_fill": "#8A8A8A"
 }
 
+# Formats a number.
 fnum = (n, cur = "") ->
   return "No data" if isNaN(n)
   f = {12: "trillion", 9: "billion", 6: "million", 3: "thousand"}
@@ -14,6 +16,8 @@ fnum = (n, cur = "") ->
       return "#{(n/Math.pow(10, v)).toFixed(2)} #{f[v]}" + " " + cur
   n.toFixed(2) + " " + cur
 
+# Taken from http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+# Takes an hsv triplet in the 0..1 range, returns rgb triplet in the 0..255 range
 hsvToRgb = (h, s, v) ->
   r = undefined
   g = undefined
@@ -50,7 +54,9 @@ hsvToRgb = (h, s, v) ->
       b = q
   [ r * 255, g * 255, b * 255 ]
 
+# The map app
 class App
+  # Constructor, 'paper' is a Raphael.js pre-configured paper.
   constructor: (paper, width, height) ->
     @paper = paper
     @width = width
@@ -65,12 +71,14 @@ class App
     @getData()
     @view = "co2_emissions_per_capita"
 
+  # Starts (= draws) the map
   start: ->
     $.getJSON "data/world_svg_paths_by_code.json", @drawMap
     app = this
     $("#select-view").click (e) ->
       app.changeView(e.target.id)
 
+  # Changes the map view (= what attribute the map currently displays)
   changeView: (view)->
     $("#select-view .button-group").children().removeClass("active")
     $("#select-view ##{view}").addClass("active")
@@ -79,7 +87,7 @@ class App
       @attr[country]["fill"] = @countryColor(country)
       @colorCountry(country, 500)
 
-
+  # Gets data. Any ways to make this function less ugly? - javascript noob
   getData: ->
     app = this
     $.getJSON "data/attributes.json", (data) ->
@@ -92,6 +100,7 @@ class App
           app.scaled_data = data
           app.start()
 
+  # Returns the color for a country, by using the values in the scale.json file.
   countryColor: (country, attr) ->
     attr = @view if attr == undefined
 
@@ -105,7 +114,7 @@ class App
     console.log "rgb(#{rgb[0]}, #{rgb[1]}, #{rgb[2]})" if country="US"
     "rgb(#{Math.floor(rgb[0])}, #{Math.floor(rgb[1])}, #{Math.floor(rgb[2])})"
     
-  
+  # Returns the Legend's HTML
   getLegend: (country) ->
     c = @data[@iso2code[country]]
     return "<h2>No Data</h2>" if c == undefined
@@ -116,6 +125,7 @@ class App
     html += "</tbody></table>"
     html
 
+  # Unselects the currently selected country
   unselectCountry: () ->
     return if @selected_country == null
     @attr[@selected_country].stroke = window.styles["border_color"]
@@ -123,6 +133,7 @@ class App
     @colorCountry(@selected_country, 500)
     @selected_country = null
 
+  # Selects the given country
   selectCountry: (country) ->
     return unless @borders.hasOwnProperty(country) and @selected_country != country
     @attr[country].stroke = window.styles["selected_border_color"]
@@ -137,12 +148,13 @@ class App
       app.unselectCountry()
       app.selectCountry(country)
 
+  # Animates a color change for the given country in a given time.
   colorCountry: (country, time=1) ->
     return unless @borders.hasOwnProperty(country)
     for i in [0...@borders[country].length]
       @borders[country][i].animate({"stroke": @attr[country].stroke, "fill": @attr[country].fill, "stroke-width": @attr[country].stroke_width}, time)
 
-
+  # Draws the SVG map
   drawMap: (data) =>
       for country, val of data
         @borders[country] = []
