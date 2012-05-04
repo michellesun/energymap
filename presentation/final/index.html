@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Exo|Open+Sans&subset=latin,greek' rel='stylesheet' type='text/css'>
+    <link href='style.css' rel='stylesheet' type='text/css' />
+    <script src='js/jquery-1.7.1.min.js' type='text/javascript'></script>
+    <script src='js/jquery-ui-1.8.18.custom.min.js' type='text/javascript'></script>
+    <script src='js/raphael-min.js' type='text/javascript'></script>
+    <script src='app.js' type='text/javascript'></script>
+    <title>The Energy Map</title>
+  </head>
+  <body>
+    <a href='index.html'>
+      <h1 class='title'>The Energy Map</h1>
+    </a>
+    <div id='content'>
+      <p class='desc'>Visualizing energy production and use.</p>
+      <div id='controls'>
+        <div id='select-view'>
+          <div class='button-group'>
+            <button class='active' id='co2_emissions_per_capita'>CO2 emissions per capita</button>
+            <button id='energy_use'>Energy Consumption</button>
+            <button id='energy_production'>Energy Production</button>
+            <button id='alternative_energy_perc'>Green Energy %</button>
+            <button id='diesel_fuel_price'>Diesel Fuel Price</button>
+          </div>
+          <div class='button-group'>
+            <button id='gdp_per_capita'>GDP per capita</button>
+            <button id='road_sector_energy_use_perc'>Road Sector Energy Use %</button>
+            <button id='electric_power_consumption_per_capita'>Electric Power Consumption per Capita</button>
+            <button id='motor_vehicles_per_1000_people'>Vehicles / 1000 people</button>
+            <button id='urban_population_perc'>Urban Population %</button>
+          </div>
+        </div>
+      </div>
+      <div id='map'></div>
+      <div id='legend'>
+        <h2>Click on a country for more information</h2>
+      </div>
+    </div>
+  </body>
+  <footer>
+    <p><a href='about.html'>About</a></p>
+    <p>Written by <a href='http://chrisp.gr'>Christos Porios</a>, in Ruby, HAML, SASS and coffeescript. Data from the <a href='http://data.worldbank.org/'>data world bank</a>. Animations powered by <a href='http://raphaeljs.com/'>raphael.js</a>. <a href='https://github.com/tech-no-crat/energymap'>Code on Github</a>.</p>
+  </footer>
+</html>
