@@ -142,9 +142,6 @@
       value = this.scaled_data[this.iso2code[country]][attr];
       if (!value) return window.styles["default_fill"];
       rgb = hsvToRgb((100 - value) / 360, 1, 1);
-      if (country = "US") {
-        console.log("rgb(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ")");
-      }
       return "rgb(" + (Math.floor(rgb[0])) + ", " + (Math.floor(rgb[1])) + ", " + (Math.floor(rgb[2])) + ")";
     };
 
@@ -171,6 +168,7 @@
     };
 
     App.prototype.selectCountry = function(country) {
+      console.log("Selecting country");
       if (!(this.borders.hasOwnProperty(country) && this.selected_country !== country)) {
         return;
       }
@@ -233,13 +231,12 @@
 
   })();
 
-  window.onload = function() {
-    Raphael("map", 1200, 600, function() {
+  $(function() {
+    return Raphael("map", 1200, 600, function() {
       var app, paper;
       paper = this;
       return app = new App(paper, 1200, 600);
     });
-    return $("#legend").draggable();
-  };
+  });
 
 }).call(this);

@@ -1,7 +1,7 @@
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: #333333;
-  color: white; }
+  background-color: #C4C4C4;
+  color: #333; }
 
 h1, p.desc {
   font-family: 'Exo', sans-serif;
@@ -23,32 +23,38 @@ p.desc {
   #content a:hover, #content a:visited:hover, #content a:active:hover, #about a:hover, #about a:visited:hover, #about a:active:hover, footer a:hover, footer a:visited:hover, footer a:active:hover {
     text-decoration: underline; }
 
-#map {
-  width: 1200px;
-  margin: 0 auto; }
+#select-view {
+  height: 80px; }
 
-footer {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 12px; }
+#map {
+  clear: both;
+  height: 600px;
+  width: 1212px;
+  margin: 0 auto;
+  clear: both; }
+  #map svg {
+    background-color: #005363;
+    border: 6px solid black;
+    border-bottom-width: 1px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px; }
 
 #legend {
-  height: 200px;
-  width: 350px;
-  position: absolute;
-  top: 500px;
-  left: 10px;
-  background-color: #D4D2D2;
-  cursor: move;
-  color: #333333;
-  padding: 5px;
-  border: 3px solid #707070;
-  border-radius: 10px;
+  height: 120px;
+  width: 1200px;
+  padding-top: 8px;
+  margin: 0 auto;
+  clear: both;
+  border: 6px solid black;
+  border-top-width: 1px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #7D7C7C;
+  color: #C4C4C4;
   overflow-y: scroll; }
   #legend h2 {
     text-align: center;
     font-size: 15px;
-    line-height: 120%;
     margin: 0; }
   #legend #general_info {
     font-size: 12px;
@@ -140,3 +146,8 @@ button {
     line-height: 15px;
     margin-top: 3px;
     margin-bottom: 10px; }
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 12px; }

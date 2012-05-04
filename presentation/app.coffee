@@ -111,7 +111,6 @@ class App
       return window.styles["default_fill"]
     rgb = hsvToRgb((100-value)/360, 1, 1)
     
-    console.log "rgb(#{rgb[0]}, #{rgb[1]}, #{rgb[2]})" if country="US"
     "rgb(#{Math.floor(rgb[0])}, #{Math.floor(rgb[1])}, #{Math.floor(rgb[2])})"
     
   # Returns the Legend's HTML
@@ -135,6 +134,7 @@ class App
 
   # Selects the given country
   selectCountry: (country) ->
+    console.log "Selecting country"
     return unless @borders.hasOwnProperty(country) and @selected_country != country
     @attr[country].stroke = window.styles["selected_border_color"]
     @attr[country].stroke_width = window.styles["selected_border_width"]
@@ -168,9 +168,9 @@ class App
           @borders[country].push line
         @colorCountry(country)
 
-window.onload = () ->
+$( ->
   Raphael("map", 1200, 600, ->
     paper = this
     app = new App(paper, 1200, 600)
   )
-  $("#legend").draggable()
+)
