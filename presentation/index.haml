@@ -9,18 +9,28 @@
     %script{"src" => "app.js", "type" => "text/javascript"}
     %title The Energy Map
   %body
-    %h1.title The Energy Map 
+    %a{"href"=>"index.html"}
+      %h1.title The Energy Map 
     #content
       %p.desc Visualizing energy production and use.
       #controls
-        #select-view.button-group
-          %button#co2_emisssions.active CO2 emissions
-          %button#energy_use Energy Consumption
-          %button#energy_production Energy Production
-          %button#alternative_energy_perc Green Energy %
+        #select-view
+          .button-group
+            %button#co2_emissions_per_capita.active CO2 emissions per capita
+            %button#energy_use Energy Consumption
+            %button#energy_production Energy Production
+            %button#alternative_energy_perc Green Energy %
+            %button#diesel_fuel_price Diesel Fuel Price 
+          .button-group
+            %button#gdp_per_capita GDP per capita
+            %button#road_sector_energy_use_perc Road Sector Energy Use %
+            %button#electric_power_consumption_per_capita Electric Power Consumption per Capita
+            %button#motor_vehicles_per_1000_people Vehicles / 1000 people
+            %button#urban_population_perc Urban Population %
       #map
       #legend
         %h2 Click on a country for more information
 
   %footer
-    %p Written by <a href='http://chrisp.gr'>Christos Porios</a>, in Ruby, HAML, SASS and coffeescript. Data from the <a href='http://data.worldbank.org/'>data world bank</a>. Animations powered by <a href='http://raphaeljs.com/'>raphael.js</a>. To be githubed soon!
+    %p <a href='about.html'>About</a>
+    %p Written by <a href='http://chrisp.gr'>Christos Porios</a>, in Ruby, HAML, SASS and coffeescript. Data from the <a href='http://data.worldbank.org/'>data world bank</a>. Animations powered by <a href='http://raphaeljs.com/'>raphael.js</a>. <a href='https://github.com/tech-no-crat/energymap'>Code on Github</a>.

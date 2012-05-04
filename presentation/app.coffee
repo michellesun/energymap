@@ -4,7 +4,6 @@ window.styles = {
   "border_width": 1,
   "selected_border_width": 2,
   "default_fill": "#8A8A8A"
-  "fill_colors": ["#229E00" , "#1D5E0B","#B0B818", "#F0C348", "#DE8100","#F06537","#D3D02", "#A62C03", "#731E02","#631900", "#631900"]
 }
 
 fnum = (n, cur = "") ->
@@ -14,6 +13,42 @@ fnum = (n, cur = "") ->
     if n>=Math.pow(10, v)
       return "#{(n/Math.pow(10, v)).toFixed(2)} #{f[v]}" + " " + cur
   n.toFixed(2) + " " + cur
+
+hsvToRgb = (h, s, v) ->
+  r = undefined
+  g = undefined
+  b = undefined
+  i = Math.floor(h * 6)
+  f = h * 6 - i
+  p = v * (1 - s)
+  q = v * (1 - f * s)
+  t = v * (1 - (1 - f) * s)
+  switch i % 6
+    when 0
+      r = v
+      g = t
+      b = p
+    when 1
+      r = q
+      g = v
+      b = p
+    when 2
+      r = p
+      g = v
+      b = t
+    when 3
+      r = p
+      g = q
+      b = v
+    when 4
+      r = t
+      g = p
+      b = v
+    when 5
+      r = v
+      g = p
+      b = q
+  [ r * 255, g * 255, b * 255 ]
 
 class App
   constructor: (paper, width, height) ->
@@ -28,7 +63,7 @@ class App
     @scaled_data = null
     @selected_country = null
     @getData()
-    @view = "co2_emisssions"
+    @view = "co2_emissions_per_capita"
 
   start: ->
     $.getJSON "data/world_svg_paths_by_code.json", @drawMap
@@ -37,8 +72,8 @@ class App
       app.changeView(e.target.id)
 
   changeView: (view)->
-    $("#select-view").children().removeClass("active")
-    $("#select-view > ##{view}").addClass("active")
+    $("#select-view .button-group").children().removeClass("active")
+    $("#select-view ##{view}").addClass("active")
     @view = view
     for country, val of @borders
       @attr[country]["fill"] = @countryColor(country)
@@ -57,21 +92,27 @@ class App
           app.scaled_data = data
           app.start()
 
-  countryColor: (country) ->
+  countryColor: (country, attr) ->
+    attr = @view if attr == undefined
+
     if !@iso2code[country]
       return window.styles["default_fill"]
-    value = @scaled_data[@iso2code[country]][@view]
+    value = @scaled_data[@iso2code[country]][attr]
     if !value 
-      window.styles["default_fill"]
-    else
-      window.styles["fill_colors"][Math.floor(value/10)]
+      return window.styles["default_fill"]
+    rgb = hsvToRgb((100-value)/360, 1, 1)
+    
+    console.log "rgb(#{rgb[0]}, #{rgb[1]}, #{rgb[2]})" if country="US"
+    "rgb(#{Math.floor(rgb[0])}, #{Math.floor(rgb[1])}, #{Math.floor(rgb[2])})"
+    
   
   getLegend: (country) ->
     c = @data[@iso2code[country]]
-    ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc']
-    html = "<h2>#{c.name}</h2><span id='general_info'>GDP: #{fnum(c.gdp, "USD")}</span><table id='data'><tbody>"
+    return "<h2>No Data</h2>" if c == undefined
+    ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc', 'diesel_fuel_price']
+    html = "<h2>#{c.name}</h2><span id='general_info' class='color-#{Math.ceil(@scaled_data[@iso2code[country]][i]/100 * 3)}'>GDP: #{fnum(c.gdp, "USD")}</span><table id='data'><tbody>"
     for i in ind
-        html += "<tr><td>#{@attributes[i].name}</td><td>#{fnum(@data[@iso2code[country]][i])}</td></tr>"
+        html += "<tr><td class = 'name'>#{@attributes[i].name}</td><td class='value color-#{Math.ceil(@scaled_data[@iso2code[country]][i]/100 * 3)}'>#{fnum(@data[@iso2code[country]][i])}</td></tr>"
     html += "</tbody></table>"
     html
 

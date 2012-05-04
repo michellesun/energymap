@@ -11,19 +11,26 @@ h1, p.desc {
 
 h1 {
   font-size: 35px;
+  color: white;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 p.desc {
   font-size: 20px;
 }
 
-a, a:visited, a:active {
+#content, #about, footer{
+  a, a:visited, a:active {
   color: #7BC7ED;
   text-decoration: none;
-  &:hover {
-    text-decoration: underline;
+    &:hover {
+      text-decoration: underline;
+    }
   }
-
 }
 
 #map {
@@ -39,7 +46,7 @@ footer {
 
 #legend {
   height: 200px;
-  width: 300px;
+  width: 350px;
   position: absolute;
   top: 500px;
   left: 10px;
@@ -60,6 +67,28 @@ footer {
 
   #general_info {
     font-size: 12px;
+    text-align: center;
+  }
+
+  td.name {
+    width: 75%;
+  }
+
+  td.value {
+    width: 25%;
+  }
+
+  .value.color-1 {
+    color: #129101;
+  }
+
+  .value.color-2 {
+    color: #FF9D00;
+
+  }
+
+  .value.color-3 {
+    color: #AD0227;
   }
 
   #data {
@@ -68,11 +97,11 @@ footer {
 }
 
 .button-group {
-  width: 800px;
+  width: 1000px;
   margin: 0 auto;
   button {
     margin: 0;
-    height: 30px;
+    height: 35px;
     width: 200px;
     float: left;
 
@@ -94,8 +123,8 @@ button {
   
   padding: 4px 10px 4px;
   margin-bottom: 0;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 12px;
+  line-height: 14px;
   color: #333333;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
@@ -140,4 +169,24 @@ button {
     background-color: #d9d9d9 \9;
     outline: 0;
   }
+}
+
+#about {
+  width: 800px;
+  margin: 0 auto;
+  
+  h3 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 25px;
+  }
+
+  h4 {
+    font-size: 15px;
+    line-height: 15px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+  }
+
 }
