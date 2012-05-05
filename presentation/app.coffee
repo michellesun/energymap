@@ -118,10 +118,12 @@ class App
     c = @data[@iso2code[country]]
     return "<h2>No Data</h2>" if c == undefined
     ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc', 'diesel_fuel_price']
-    html = "<h2>#{c.name}</h2><span id='general_info' class='color-#{Math.ceil(@scaled_data[@iso2code[country]][i]/100 * 3)}'>GDP: #{fnum(c.gdp, "USD")}</span><table id='data'><tbody>"
+
+    html = "<h2>#{c.name}</h2><div id='general-info'>GDP: <span class='color-#{Math.ceil(@scaled_data[@iso2code[country]]["gdp"] / 100 * 3)}'>#{fnum(c.gdp)}</span> USD</div><div class='data'>"
+
     for i in ind
-        html += "<tr><td class = 'name'>#{@attributes[i].name}</td><td class='value color-#{Math.ceil(@scaled_data[@iso2code[country]][i]/100 * 3)}'>#{fnum(@data[@iso2code[country]][i])}</td></tr>"
-    html += "</tbody></table>"
+        html += "<div class='item'><div class = 'name'>#{ @attributes[i].name }</div><div class='value color-#{Math.ceil(@scaled_data[@iso2code[country]][i] / 100 * 3)}'>#{fnum(@data[@iso2code[country]][i])}</div></div>"
+    html += "</div>"
     html
 
   # Unselects the currently selected country
@@ -134,7 +136,6 @@ class App
 
   # Selects the given country
   selectCountry: (country) ->
-    console.log "Selecting country"
     return unless @borders.hasOwnProperty(country) and @selected_country != country
     @attr[country].stroke = window.styles["selected_border_color"]
     @attr[country].stroke_width = window.styles["selected_border_width"]

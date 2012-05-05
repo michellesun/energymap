@@ -1,7 +1,14 @@
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: #C4C4C4;
-  color: #333;
+  background: rgb(238,238,238); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(238,238,238,1) 0%, rgba(238,238,238,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* IE10+ */
+  background: linear-gradient(top, rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+  color: #444;
 }
 
 h1, p.desc {
@@ -9,9 +16,9 @@ h1, p.desc {
   text-align: center;
 }
 
-a h1#title {
+h1#title a {
   font-size: 35px;
-  color: white;
+  color: #444;
   text-decoration: none;
 
   &:hover {
@@ -25,8 +32,8 @@ p.desc {
 
 #content, #about, footer{
   a, a:visited, a:active {
-  color: #7BC7ED;
-  text-decoration: none;
+    color: #1D6E80;
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
@@ -44,8 +51,15 @@ p.desc {
   margin: 0 auto;
   clear: both;
   svg {
-    background-color: #005363;
-    border: 6px solid black;
+    background: rgb(125,126,125); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(125,126,125,1) 0%, rgba(56,56,56,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(125,126,125,1)), color-stop(100%,rgba(56,56,56,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(125,126,125,1) 0%,rgba(56,56,56,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(125,126,125,1) 0%,rgba(56,56,56,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(125,126,125,1) 0%,rgba(56,56,56,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(125,126,125,1) 0%,rgba(56,56,56,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#383838',GradientType=0 ); /* IE6-9 */
+    border: 6px solid #002233;
     border-bottom-width: 1px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -53,57 +67,79 @@ p.desc {
 }
 
 #legend {
-  height: 120px;
+  height: 200px;
   width: 1200px;
   padding-top: 8px;
   margin: 0 auto;
   clear: both;
+  overflow: hidden;
 
-  border: 6px solid black;
+  border: 6px solid #002233;
   border-top-width: 1px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
-  background-color: #7D7C7C;
-  color: #C4C4C4;
-  overflow-y: scroll;
+  background: #cedce7; /* Old browsers */
+  background: -moz-linear-gradient(top, #cedce7 0%, #596a72 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cedce7), color-stop(100%,#596a72)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #cedce7 0%,#596a72 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #cedce7 0%,#596a72 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #cedce7 0%,#596a72 100%); /* IE10+ */
+  background: linear-gradient(top, #cedce7 0%,#596a72 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 ); /* IE6-9 */
+  color: #444;
 
   h2 {
     text-align: center;
-    font-size: 15px;
+    font-size: 18px;
     margin: 0;
   }
 
-  #general_info {
-    font-size: 12px;
+  #general-info {
+    font-size: 15px;
     text-align: center;
+    margin-bottom: 10px;
   }
 
-  td.name {
-    width: 75%;
+  .item {
+    font-size: 12px;
+    width: 300px;
+    height: 50px;
+    float: left;
+
+    .name {
+      width: 185px;
+      height: 30px;
+      padding-right: 10px;
+      float: left;
+    }
+
+    .value {
+      width: 100px;
+      height: 30px;
+      float: left;
+    }
   }
 
-  td.value {
-    width: 25%;
-  }
 
-  .value.color-1 {
-    color: #129101;
-  }
-
-  .value.color-2 {
-    color: #FF9D00;
-
-  }
-
-  .value.color-3 {
-    color: #AD0227;
-  }
-
-  #data {
+  .data {
     font-size: 10px;
   }
 }
+
+.color-1 {
+  color: #129101;
+}
+
+.color-2 {
+  color: #FF9D00;
+
+}
+
+.color-3 {
+  color: #AD0227;
+}
+
 
 .button-group {
   width: 1000px;
@@ -129,7 +165,7 @@ p.desc {
 
 // Button styling copied from bootstrap
 button {
-  
+
   padding: 4px 10px 4px;
   margin-bottom: 0;
   font-size: 12px;
@@ -183,7 +219,7 @@ button {
 #about {
   width: 800px;
   margin: 0 auto;
-  
+
   h3 {
     text-align: center;
     font-weight: bold;

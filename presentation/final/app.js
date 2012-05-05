@@ -150,12 +150,12 @@
       c = this.data[this.iso2code[country]];
       if (c === void 0) return "<h2>No Data</h2>";
       ind = ['energy_production', 'energy_use', 'gdp_per_energy_use', 'alternative_energy_perc', 'energy_imports_perc', 'road_sector_energy_use_perc', 'electric_power_consumption_per_capita', 'co2_emisssions', 'co2_emissions_per_capita', 'motor_vehicles_per_1000_people', 'urban_population_perc', 'diesel_fuel_price'];
-      html = "<h2>" + c.name + "</h2><span id='general_info' class='color-" + (Math.ceil(this.scaled_data[this.iso2code[country]][i] / 100 * 3)) + "'>GDP: " + (fnum(c.gdp, "USD")) + "</span><table id='data'><tbody>";
+      html = "<h2>" + c.name + "</h2><div id='general-info'>GDP: <span class='color-" + (Math.ceil(this.scaled_data[this.iso2code[country]]["gdp"] / 100 * 3)) + "'>" + (fnum(c.gdp)) + "</span> USD</div><div class='data'>";
       for (_i = 0, _len = ind.length; _i < _len; _i++) {
         i = ind[_i];
-        html += "<tr><td class = 'name'>" + this.attributes[i].name + "</td><td class='value color-" + (Math.ceil(this.scaled_data[this.iso2code[country]][i] / 100 * 3)) + "'>" + (fnum(this.data[this.iso2code[country]][i])) + "</td></tr>";
+        html += "<div class='item'><div class = 'name'>" + this.attributes[i].name + "</div><div class='value color-" + (Math.ceil(this.scaled_data[this.iso2code[country]][i] / 100 * 3)) + "'>" + (fnum(this.data[this.iso2code[country]][i])) + "</div></div>";
       }
-      html += "</tbody></table>";
+      html += "</div>";
       return html;
     };
 
@@ -168,7 +168,6 @@
     };
 
     App.prototype.selectCountry = function(country) {
-      console.log("Selecting country");
       if (!(this.borders.hasOwnProperty(country) && this.selected_country !== country)) {
         return;
       }
